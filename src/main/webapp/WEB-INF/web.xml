@@ -9,10 +9,14 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:/application-context.xml</param-value>
     </context-param>
+
+
     <servlet>
         <servlet-name>dispatcher</servlet-name>
          <!-- DispatcherServlet : 요청을 리다이렉트 -->
@@ -22,10 +26,15 @@
             <param-value>classpath:/servlet-context.xml</param-value>
         </init-param>
     </servlet>
+
+
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+
+
+    <!-- 인코딩 설정 -->
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

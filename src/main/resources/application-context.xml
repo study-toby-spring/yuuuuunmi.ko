@@ -18,4 +18,11 @@
 
 
     </context:component-scan>
+
+    <!--<context:annotation-config></context:annotation-config>-->
+    <bean id="idGenerator" class="java.util.Random"/>
+    <bean id="helloFactory" class="spring.basic.util.HelloFactory">
+        <property name="random" ref="idGenerator"></property>
+    </bean>
+
 </beans>
