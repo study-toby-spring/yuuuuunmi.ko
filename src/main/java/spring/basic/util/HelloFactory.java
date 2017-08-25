@@ -3,7 +3,6 @@ package spring.basic.util;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import spring.basic.domain.Hello;
 
 import java.util.Random;
