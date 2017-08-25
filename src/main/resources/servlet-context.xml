@@ -21,4 +21,25 @@
 
     <!--요청 파라미터 파싱 자동으로 해주는 annotation  -->
     <mvc:annotation-driven/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/hello**"/>
+            <bean class="spring.basic.controller.HelloInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+    <mvc:resources mapping="/static/**" location="/WEB-INF/resources/"/>
+
+    <!-- 해당view를 찾아서 resolve해줌 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            <property name="prefix" value="/WEB-INF/jsp/"/>
+            <property name="suffix" value=".jsp"/>
+    </bean>
+
+
+
+
+
 </beans>
