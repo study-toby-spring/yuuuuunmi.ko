@@ -1,7 +1,8 @@
 package spring.toby1;
 
-import spring.toby1.dao.ConnectionMaker;
-import spring.toby1.dao.DConnectionMaker;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import spring.toby1.dao.DaoFactory;
 import spring.toby1.dao.UserDao;
 import spring.toby1.domain.User;
@@ -14,13 +15,16 @@ import java.sql.SQLException;
 public class UserDaoTest {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        UserDao dao = new DaoFactory().userDao();
+
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+
+        UserDao dao = context.getBean("userDao", UserDao.class);
 
 
         User user = new User();
-        user.setId("yuuuunmi");
-        user.setName("윰미고");
-        user.setPassword("hihihi");
+        user.setId("hijjh");
+        user.setName("윰미f고");
+        user.setPassword("hfffihihi");
 
         dao.add(user);
 
