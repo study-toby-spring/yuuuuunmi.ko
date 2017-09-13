@@ -3,6 +3,8 @@ package spring.toby1;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import spring.toby1.dao.DaoFactory;
 import spring.toby1.dao.UserDao;
 import spring.toby1.domain.User;
@@ -18,13 +20,15 @@ public class UserDaoTest {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
 
+//        ApplicationContext context = new GenericXmlApplicationContext("application-context.xml");
+
         UserDao dao = context.getBean("userDao", UserDao.class);
 
 
         User user = new User();
-        user.setId("hijjh");
-        user.setName("윰미f고");
-        user.setPassword("hfffihihi");
+        user.setId("1709131");
+        user.setName("수요일s");
+        user.setPassword("wednesdays");
 
         dao.add(user);
 

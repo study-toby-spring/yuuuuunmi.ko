@@ -2,6 +2,7 @@ package spring.toby1.dao;
 
 import spring.toby1.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 
@@ -10,6 +11,7 @@ import java.sql.*;
  */
 public class UserDao {
 
+    private DataSource dataSource;
 
     private ConnectionMaker connectionMaker;
 
@@ -20,13 +22,20 @@ public class UserDao {
         this.connectionMaker = connectionMaker;
     }
 
-    public void setConnectionMaker(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
+
+//    }
+
+//    public void setConnectionMaker(ConnectionMaker connectionMaker) {
+//        this.connectionMaker = connectionMaker;
+//    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
 
-        Connection c = connectionMaker.makeConnection();
+//        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) VALUES (?,?,?)");
         ps.setString(1, user.getId());
@@ -42,7 +51,9 @@ public class UserDao {
     public User get(String id) throws ClassNotFoundException, SQLException {
 
 
-        Connection c = connectionMaker.makeConnection();
+//        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
+
         PreparedStatement ps = c.prepareStatement("select * from users where id=?");
         ps.setString(1, id);
 
