@@ -3,14 +3,8 @@ package spring.toby1;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import spring.toby1.dao.UserDao;
 import spring.toby1.domain.User;
 
@@ -40,7 +34,7 @@ public class UserDaoTest {
 
         DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost/testdb","root","spring", true);
         dao.setDataSource(dataSource);
-        
+
         this.user1 = new User("170919", "윰미고", "20141128");
         this.user2 = new User("170918", "윰미꼬", "20141128");
         this.user3 = new User("170917", "윰미코", "20141128");
