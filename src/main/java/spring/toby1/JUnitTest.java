@@ -19,7 +19,8 @@ import static org.junit.Assert.assertThat;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/junitContext.xml")
+//@ContextConfiguration(locations = "/junitContext.xml")
+@ContextConfiguration(locations = "/application-context.xml")
 public class JUnitTest {
     @Autowired
     ApplicationContext context;

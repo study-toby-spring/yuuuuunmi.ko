@@ -17,9 +17,32 @@
                 expression="org.springframework.stereotype.Controller"/>
 
 
+
     </context:component-scan>
 
+
+
     <!--<context:annotation-config></context:annotation-config>-->
+
+
+        <!--<context:property-placeholder location="/database.properties"/>-->
+
+
+
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+        <property name="locations">
+
+            <!-- 프로퍼티 파일 경로 지정 -->
+
+            <value>/database.properties</value>
+            <!--<value>classpath:/WEB-INF/database.properties</value>-->
+        </property>
+
+    </bean>
+
+
     <bean id="idGenerator" class="java.util.Random"/>
     <bean id="helloFactory" class="spring.basic.util.HelloFactory">
         <property name="random" ref="idGenerator"></property>
@@ -31,11 +54,14 @@
     <!--<bean id="userDao" class="spring.toby1.dao.UserDao">-->
     <!--<property name="connectionMaker" ref="connectionMaker"/>-->
     <!--</bean>-->
+
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost/spring?useSSL=false"/>
-        <property name="username" value="spring"/>
-        <property name="password" value="book"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
     </bean>
     <bean id="userDao" class="spring.toby1.dao.UserDao">
         <property name="dataSource" ref="dataSource"/>
