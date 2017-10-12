@@ -15,14 +15,14 @@ public class DaoFactory {
     @Bean // annotation that IoC method creating object, method name = bean name => getBean() method's parameter
     public UserDao userDao(){
         // 생성자를 통한 DI 사용
-        // UserDao userDao = new UserDao(connectionMaker());
+        // UserDaoJdbc userDaoJdbc = new UserDaoJdbc(connectionMaker());
 
         // 수정자 메소드를 통한 DI 사용
-        UserDao userDao = new UserDao();
-        userDao.setDataSource(dataSource());
+        UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
+        userDaoJdbc.setDataSource(dataSource());
 
 
-        return userDao;
+        return userDaoJdbc;
     }
 
 
