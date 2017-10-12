@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Created by yuuuunmi on 2017. 7. 30..
@@ -25,6 +26,7 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations = "/application-context.xml")
 public class UserDaoTest {
 
+    @Autowired
     private UserDao dao;
 
     @Autowired
@@ -38,12 +40,6 @@ public class UserDaoTest {
 
     @Before
     public void setUp(){
-
-
-        dao = new UserDao();
-
-        dao.setDataSource(dataSource);
-
         this.user1 = new User("gyumee", "윰미고", "20141128");
         this.user2 = new User("leegw700", "윰미꼬", "20141128");
         this.user3 = new User("bumjin", "윰미코", "20141128");
@@ -123,11 +119,36 @@ public class UserDaoTest {
 
     }
 
+    @Test(expected = DataAccessException.class)
+    public void duplicateKey(){
+        dao.deleteAll();
+
+        dao.add(user1);
+        dao.add(user1);
+
+    }
+//    @Test
+//    public void sqlExceptionTranslate(){
+//        dao.deleteAll();
+//        try {
+//            dao.add(user1);
+//            dao.add(user1);
+//        } catch (DuplicateKeyException ex) {
+//            SQLException sqlEx = (SQLException)ex.getRootCause();
+//            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+//
+//            assertThat(set.translate(null, null, sqlEx), is(DuplicateKeyException.class) );
+//
+//        }
+//    }
+
     private void checkSameUser(User user1, User user2) {
         assertThat(user1.getId(), is(user2.getId()));
         assertThat(user1.getName(), is(user2.getName()));
         assertThat(user1.getPassword(), is(user2.getPassword()));
     }
+
+
 
     public static void main(String[] args){
         JUnitCore.main("spring.toby1.UserDaoTest");
