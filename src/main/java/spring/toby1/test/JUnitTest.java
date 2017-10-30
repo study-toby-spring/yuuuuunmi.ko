@@ -1,4 +1,4 @@
-package spring.toby1;
+package spring.toby1.test;
 
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -57,7 +57,7 @@ public class JUnitTest {
 
 
     public static void main(String[] args) {
-        JUnitCore.main("spring.toby1.JUnitTest");
+        JUnitCore.main("spring.toby1.test.JUnitTest");
     }
 
 }
