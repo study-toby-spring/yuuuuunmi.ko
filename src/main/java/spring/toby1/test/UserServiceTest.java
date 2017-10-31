@@ -9,14 +9,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import spring.toby1.dao.UserDao;
 import spring.toby1.domain.Level;
 import spring.toby1.domain.User;
+import spring.toby1.exception.TestUserServiceException;
 import spring.toby1.service.UserService;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.fail;
 import static spring.toby1.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
 import static spring.toby1.service.UserService.MIN_RECCOMEND_FOR_GOLD;
 
@@ -32,6 +35,9 @@ public class UserServiceTest {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    DataSource dataSource;
 
     List<User> users;
 
@@ -67,7 +73,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeLevels() {
+    public void upgradeLevels() throws Exception {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
@@ -93,4 +99,37 @@ public class UserServiceTest {
     public void bean() {
         assertThat(this.userService, is(notNullValue()));
     }
+
+
+    static class TestUserService extends UserService {
+        private String id;
+
+        private TestUserService(String id) {
+            this.id = id;
+        }
+
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+    }
+
+    @Test
+    public void upgradeAllOrNothing() throws Exception {
+        UserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(this.userDao);
+        testUserService.setDataSource(this.dataSource);
+
+        userDao.deleteAll();
+        for (User user : users) userDao.add(user);
+
+        try {
+            testUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
+        } catch (TestUserServiceException e) { }
+
+        checkLevelUpgraded(users.get(1), false);
+
+    }
+
 }
