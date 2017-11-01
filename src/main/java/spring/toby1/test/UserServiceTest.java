@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -11,6 +12,7 @@ import spring.toby1.dao.UserDao;
 import spring.toby1.domain.Level;
 import spring.toby1.domain.User;
 import spring.toby1.exception.TestUserServiceException;
+import spring.toby1.service.MockMailSender;
 import spring.toby1.service.UserService;
 
 import java.util.Arrays;
@@ -38,6 +40,9 @@ public class UserServiceTest {
 
     @Autowired
     PlatformTransactionManager transactionManager;
+
+    @Autowired
+    MailSender mailSender;
 
     List<User> users;
 
@@ -77,6 +82,10 @@ public class UserServiceTest {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
+
         userService.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
@@ -84,6 +93,13 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(2), false);
         checkLevelUpgraded(users.get(3), true);
         checkLevelUpgraded(users.get(4), false);
+
+        List<String> request = mockMailSender.getRequests();
+        assertThat(request.size(), is(2));
+        assertThat(request.get(0), is(users.get(1).getEmail()));
+        assertThat(request.get(1), is(users.get(3).getEmail()));
+
+
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
@@ -128,6 +144,7 @@ public class UserServiceTest {
         } catch (TestUserServiceException e) { }
 
         checkLevelUpgraded(users.get(1), false);
+        testUserService.setMailSender(mailSender);
 
     }
 
