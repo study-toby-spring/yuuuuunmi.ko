@@ -12,6 +12,8 @@ public class User {
     int login;
     int recommend;
 
+    String email;
+
 
     public User() {
     }
@@ -22,13 +24,14 @@ public class User {
         this.password = password;
     }
 
-    public User(String id, String name, String password, Level level, int login, int recommend) {
+    public User(String id, String name, String password, Level level, int login, int recommend, String email) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.level = level;
         this.login = login;
         this.recommend = recommend;
+        this.email = email;
     }
 
     public String getId() {
@@ -69,6 +72,14 @@ public class User {
 
     public void setLogin(int login) {
         this.login = login;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getRecommend() {

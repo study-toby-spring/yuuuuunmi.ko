@@ -8,8 +8,9 @@
     <name>Basic Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
-
-
+    <properties>
+        <javax-mail-version>1.4.7</javax-mail-version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -81,6 +82,11 @@
             <version>4.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${javax-mail-version}</version>
+        </dependency>
 
     </dependencies>
 

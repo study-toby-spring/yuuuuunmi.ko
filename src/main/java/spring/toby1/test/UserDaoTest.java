@@ -41,9 +41,9 @@ public class UserDaoTest {
 
     @Before
     public void setUp(){
-        this.user1 = new User("gyumee", "윰미고", "20141128", Level.BASIC, 1, 0);
-        this.user2 = new User("leegw700", "윰미꼬", "20141128", Level.SILVER, 55, 10);
-        this.user3 = new User("bumjin", "윰미코", "20141128", Level.GOLD, 100, 40);
+        this.user1 = new User("gyumee", "윰미고", "20141128", Level.BASIC, 1, 0, "gyumee@n.com");
+        this.user2 = new User("leegw700", "윰미꼬", "20141128", Level.SILVER, 55, 10, "leegw700@d.com");
+        this.user3 = new User("bumjin", "윰미코", "20141128", Level.GOLD, 100, 40, "bumjin@g.com");
     }
 
 
@@ -138,12 +138,32 @@ public class UserDaoTest {
         user1.setLevel(Level.GOLD);
         user1.setLogin(1000);
         user1.setRecommend(999);
+        user1.setEmail("springno6@h.com");
         dao.update(user1);
 
         User user1update = dao.get(user1.getId());
         checkSameUser(user1, user1update);
         User user2same = dao.get(user2.getId());
         checkSameUser(user2, user2same);
+
+    }
+
+    @Test
+    public void getEmail(){
+        dao.deleteAll();
+        dao.add(user1);
+        dao.add(user2);
+        dao.add(user3);
+
+        User userGet1 = dao.get(user1.getId());
+        assertThat(userGet1.getEmail(), is(user1.getEmail()));
+
+        User userGet2 = dao.get(user2.getId());
+        assertThat(userGet2.getEmail(), is(user2.getEmail()));
+
+        User userGet3 = dao.get(user3.getId());
+        assertThat(userGet3.getEmail(), is(user3.getEmail()));
+
 
     }
 
