@@ -6,7 +6,6 @@ import spring.toby1.dao.UserDao;
 import spring.toby1.domain.Level;
 import spring.toby1.domain.User;
 
-import javax.mail.*;
 import java.util.List;
 
 /**
@@ -25,11 +24,7 @@ public class UserServiceImpl implements UserService {
         this.mailSender = mailSender;
     }
 
-    private Authenticator authenticator = new javax.mail.Authenticator() {
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication("<ID>", "<PASSWORD>");
-            }
-    };
+
 
 
     public void setUserDao(UserDao userDao) {

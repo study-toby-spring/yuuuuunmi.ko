@@ -20,8 +20,6 @@ public class MockMailSender implements MailSender {
 
     public void send(SimpleMailMessage mailMessage) throws MailException {
         requests.add(mailMessage.getTo()[0]);
-
-
     }
 
     public void send(SimpleMailMessage... simpleMailMessages) throws MailException {
