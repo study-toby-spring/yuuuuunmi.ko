@@ -13,7 +13,8 @@ import spring.toby1.domain.Level;
 import spring.toby1.domain.User;
 import spring.toby1.exception.TestUserServiceException;
 import spring.toby1.service.MockMailSender;
-import spring.toby1.service.UserService;
+import spring.toby1.service.UserServiceImpl;
+import spring.toby1.service.UserServiceTx;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +23,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.fail;
-import static spring.toby1.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static spring.toby1.service.UserService.MIN_RECCOMEND_FOR_GOLD;
+import static spring.toby1.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static spring.toby1.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 
 /**
  * Created by yuuuunmi on 2017. 10. 17..
@@ -33,7 +34,10 @@ import static spring.toby1.service.UserService.MIN_RECCOMEND_FOR_GOLD;
 @ContextConfiguration(locations = "/application-context.xml")
 public class UserServiceTest {
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
+
+    @Autowired
+    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -49,11 +53,11 @@ public class UserServiceTest {
     @Before
     public void setUp() {
         users = Arrays.asList(
-                new User("bumjin", "박범진", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0, ""),
-                new User("joytouch", "강명성", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0, ""),
-                new User("erwins", "신승한", "p3", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD - 1, ""),
-                new User("madnite1", "이상호", "p4", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD, ""),
-                new User("green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE, "")
+                new User("bumjin", "박범진", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0, "bumjin@a"),
+                new User("joytouch", "강명성", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0, "joytouch@b"),
+                new User("erwins", "신승한", "p3", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD - 1, "erwins@c"),
+                new User("madnite1", "이상호", "p4", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD, "madnite1@d"),
+                new User("green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE, "green@e")
         );
 
     }
@@ -84,7 +88,7 @@ public class UserServiceTest {
 
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
         userService.upgradeLevels();
 
@@ -117,7 +121,7 @@ public class UserServiceTest {
     }
 
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
 
         private TestUserService(String id) {
@@ -132,14 +136,19 @@ public class UserServiceTest {
 
     @Test
     public void upgradeAllOrNothing() throws Exception {
-        UserService testUserService = new TestUserService(users.get(3).getId());
+        UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setTransactionManager(transactionManager);
+        testUserService.setMailSender(mailSender);
+
+        UserServiceTx userServiceTx = new UserServiceTx();
+        userServiceTx.setTransactionManager(transactionManager);
+        userServiceTx.setUserService(testUserService);
+
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
         try {
-            testUserService.upgradeLevels();
+            userServiceTx.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) { }
 
