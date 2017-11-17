@@ -14,10 +14,9 @@ import spring.toby1.dao.UserDao;
 import spring.toby1.domain.Level;
 import spring.toby1.domain.User;
 import spring.toby1.exception.TestUserServiceException;
-import spring.toby1.service.MockMailSender;
-import spring.toby1.service.UserServiceImpl;
-import spring.toby1.service.UserServiceTx;
+import spring.toby1.service.*;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -126,7 +125,7 @@ public class UserServiceTest {
 
         verify(mockUserDao, times(2)).update(any(User.class));
         verify(mockUserDao, times(2)).update(any(User.class));
-        verify(mockUserDao, times(2)).update(users.get(1));
+        verify(mockUserDao, times(1)).update(users.get(1));
         assertThat(users.get(1).getLevel(), is(Level.SILVER));
         verify(mockUserDao).update(users.get(3));
         assertThat(users.get(3).getLevel(), is(Level.GOLD));
@@ -165,15 +164,21 @@ public class UserServiceTest {
         testUserService.setUserDao(this.userDao);
         testUserService.setMailSender(mailSender);
 
-        UserServiceTx userServiceTx = new UserServiceTx();
-        userServiceTx.setTransactionManager(transactionManager);
-        userServiceTx.setUserService(testUserService);
+        TransactionHandler txHandler = new TransactionHandler();
+        txHandler.setTarget(testUserService);
+        txHandler.setTransactionManager(transactionManager);
+        txHandler.setPattern("upgradeLevels");
+
+        UserService txUserService = (UserService) Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[]{UserService.class},
+                txHandler);
 
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
         try {
-            userServiceTx.upgradeLevels();
+            txUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
         }
