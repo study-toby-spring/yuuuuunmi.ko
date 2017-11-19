@@ -125,7 +125,7 @@ public class UserServiceTest {
 
         verify(mockUserDao, times(2)).update(any(User.class));
         verify(mockUserDao, times(2)).update(any(User.class));
-        verify(mockUserDao, times(1)).update(users.get(1));
+        verify(mockUserDao).update(users.get(1));
         assertThat(users.get(1).getLevel(), is(Level.SILVER));
         verify(mockUserDao).update(users.get(3));
         assertThat(users.get(3).getLevel(), is(Level.GOLD));
