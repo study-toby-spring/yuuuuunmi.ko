@@ -6,65 +6,65 @@
 
 
     <!--의존성 주입하는 부분 -->
-
-
     <context:component-scan
             base-package="spring.basic">
-
         <!--controller만 빼고 가져오겠다 -->
         <context:exclude-filter
                 type="annotation"
                 expression="org.springframework.stereotype.Controller"/>
-
-
     </context:component-scan>
-
 
     <!--<context:property-placeholder location="/database.properties"/>-->
 
-
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-
         <property name="locations">
             <!-- 프로퍼티 파일 경로 지정 -->
             <value>/database.properties</value>
         </property>
-
     </bean>
 
-
-    <bean id="idGenerator" class="java.util.Random"/>
-    <bean id="helloFactory" class="spring.basic.util.HelloFactory">
-        <property name="random" ref="idGenerator"></property>
-    </bean>
-
-
-    <bean id="userService" class="spring.toby1.service.TxProxyFactoryBean">
-        <property name="transactionManager" ref="transactionManager"/>
+    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="target" ref="userServiceImpl"/>
-        <property name="pattern" value="upgradeLevels"/>
-        <property name="serviceInterface" value="spring.toby1.service.UserService"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionAdvisor</value>
+            </list>
+        </property>
     </bean>
     <bean id="userServiceImpl" class="spring.toby1.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
-    <bean id="mailSender" class="spring.toby1.service.DummyMailSender">
-        <!--<property name="host" value="${mail.smtp.host}"/>-->
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="transactionPointcut"/>
+    </bean>
+    <bean id="transactionAdvice" class="spring.toby1.service.proxy.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager"/>
     </bean>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
-
     </bean>
+    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+        <property name="mappedName" value="upgrade*"/>
+    </bean>
+
     <bean id="userDao" class="spring.toby1.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <bean id="mailSender" class="spring.toby1.service.DummyMailSender">
+        <!--<property name="host" value="${mail.smtp.host}"/>-->
+    </bean>
+    <bean id="idGenerator" class="java.util.Random"/>
+    <bean id="helloFactory" class="spring.basic.util.HelloFactory">
+        <property name="random" ref="idGenerator"></property>
     </bean>
 
 
