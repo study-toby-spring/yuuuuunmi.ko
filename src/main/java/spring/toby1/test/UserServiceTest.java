@@ -4,12 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import spring.toby1.dao.UserDao;
@@ -41,6 +39,9 @@ import static spring.toby1.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 public class UserServiceTest {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -109,7 +110,6 @@ public class UserServiceTest {
 
     }
 
-
     @Test
     public void mockUpgradeLevels() throws Exception {
         UserServiceImpl userService = new UserServiceImpl();
@@ -138,42 +138,20 @@ public class UserServiceTest {
 
     }
 
-    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
-        assertThat(updated.getId(), is(expectedId));
-        assertThat(updated.getLevel(), is(expectedLevel));
-    }
-
-    private void checkLevelUpgraded(User user, boolean upgraded) {
-        User userUpdate = userDao.get(user.getId());
-        if (upgraded) {
-            assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
-        } else {
-            assertThat(userUpdate.getLevel(), is(user.getLevel()));
-        }
-    }
-
     @Test
     public void bean() {
         assertThat(this.userService, is(notNullValue()));
     }
 
-
     @Test
-    @DirtiesContext // 컨텍스트 설정을 변경하기 때문에 필요
     public void upgradeAllOrNothing() throws Exception {
-        TestUserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(userDao);
-        testUserService.setMailSender(mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
         userDao.deleteAll();
+
         for (User user : users) userDao.add(user);
 
         try {
-            txUserService.upgradeLevels();
+            this.testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
         }
@@ -182,12 +160,9 @@ public class UserServiceTest {
 
     }
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "madnite1";
 
-        private TestUserService(String id) {
-            this.id = id;
-        }
 
         protected void upgradeLevel(User user) {
             if (user.getId().equals(this.id)) throw new TestUserServiceException();
@@ -229,6 +204,20 @@ public class UserServiceTest {
 
         public int getCount() {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+        assertThat(updated.getId(), is(expectedId));
+        assertThat(updated.getLevel(), is(expectedLevel));
+    }
+
+    private void checkLevelUpgraded(User user, boolean upgraded) {
+        User userUpdate = userDao.get(user.getId());
+        if (upgraded) {
+            assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
+        } else {
+            assertThat(userUpdate.getLevel(), is(user.getLevel()));
         }
     }
 
