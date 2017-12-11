@@ -1,4 +1,4 @@
-package spring.toby1.service.proxy;
+package spring.toby1.learningtest.jdk.proxy;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

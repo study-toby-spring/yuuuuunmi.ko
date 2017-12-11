@@ -25,8 +25,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -79,5 +77,21 @@ public class UserServiceImpl implements UserService {
     public void add(User user) {
         if (user.getLevel() == null) user.setLevel(Level.BASIC);
         userDao.add(user);
+    }
+
+    public User get(String id) {
+        return userDao.get(id);
+    }
+
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    public void update(User user) {
+        userDao.update(user);
     }
 }

@@ -5,6 +5,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import spring.toby1.domain.User;
 
+import java.util.List;
+
 /**
  * Created by yuuuunmi on 2017. 11. 5..
  */
@@ -24,6 +26,22 @@ public class UserServiceTx implements UserService {
 
     public void add(User user) {
         userService.add(user);
+    }
+
+    public User get(String id) {
+        return null;
+    }
+
+    public List<User> getAll() {
+        return null;
+    }
+
+    public void deleteAll() {
+
+    }
+
+    public void update(User user) {
+
     }
 
     public void upgradeLevels() throws Exception {
