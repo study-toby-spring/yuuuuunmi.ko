@@ -28,26 +28,18 @@
     </bean>
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
-    <bean id="userService" class="spring.toby1.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
-        <property name="mailSender" ref="mailSender"/>
-    </bean>
-    <bean id="testUserService" class="spring.toby1.test.UserServiceTest$TestUserService" parent="userService"/>
-    <!--<bean id="transactionAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">-->
-        <!--<property name="transactionManager" ref="transactionManager"/>-->
-        <!--<property name="transactionAttributes">-->
-            <!--<props>-->
-                <!--<prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>-->
-                <!--<prop key="*">PROPAGATION_REQUIRED</prop>-->
-            <!--</props>-->
-        <!--</property>-->
-    <!--</bean>-->
+    <tx:annotation-driven/>
     <tx:advice id="transactionAdvice">
         <tx:attributes>
             <tx:method name="get*" read-only="true"/>
             <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
+    <bean id="userService" class="spring.toby1.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="mailSender" ref="mailSender"/>
+    </bean>
+    <bean id="testUserService" class="spring.toby1.test.UserServiceTest$TestUserService" parent="userService"/>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
