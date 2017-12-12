@@ -11,6 +11,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import spring.toby1.dao.UserDao;
 import spring.toby1.domain.Level;
 import spring.toby1.domain.User;
@@ -38,6 +41,9 @@ import static spring.toby1.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/application-context.xml")
 public class UserServiceTest {
+    @Autowired
+    PlatformTransactionManager transactionManager;
+
     @Autowired
     UserService userService;
 
@@ -166,6 +172,25 @@ public class UserServiceTest {
         testUserService.getAll();
     }
 
+    @Test
+    public void transactionSync(){
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
+        try {
+            userService.deleteAll();
+            userService.add(users.get(0));
+            userService.add(users.get(1));
+
+        } finally {
+
+            transactionManager.rollback(txStatus);
+        }
+
+
+
+    }
     static class TestUserService extends UserServiceImpl {
         private String id = "madnite1";
 
