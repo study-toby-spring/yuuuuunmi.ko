@@ -9,11 +9,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
 import spring.toby1.dao.UserDao;
 import spring.toby1.domain.Level;
 import spring.toby1.domain.User;
@@ -40,6 +40,7 @@ import static spring.toby1.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/application-context.xml")
+@Transactional
 public class UserServiceTest {
     @Autowired
     PlatformTransactionManager transactionManager;
@@ -168,29 +169,22 @@ public class UserServiceTest {
     }
 
     @Test(expected = TransientDataAccessResourceException.class)
-    public void readOnlyTransactionAttribute(){
+    public void readOnlyTransactionAttribute() {
         testUserService.getAll();
     }
 
     @Test
-    public void transactionSync(){
+    @Transactional
+    @Rollback(false)
+    public void transactionSync() {
 
-        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-
-        try {
-            userService.deleteAll();
-            userService.add(users.get(0));
-            userService.add(users.get(1));
-
-        } finally {
-
-            transactionManager.rollback(txStatus);
-        }
-
+        userService.deleteAll();
+        userService.add(users.get(0));
+        userService.add(users.get(1));
 
 
     }
+
     static class TestUserService extends UserServiceImpl {
         private String id = "madnite1";
 
