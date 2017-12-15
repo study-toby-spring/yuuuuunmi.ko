@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 public class UppercaseHandler implements InvocationHandler {
     Object target;
 
+    // Issue : 왜 private이 안되지?
     public UppercaseHandler(Object target) {
         this.target = target;
     }
