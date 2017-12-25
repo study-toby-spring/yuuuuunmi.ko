@@ -49,7 +49,10 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
     <bean id="sqlService" class="spring.toby1.service.sqlservice.XmlSqlService">
-       <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
+       <property name="sqlReader" ref="sqlService"/>
+        <property name="sqlRegistry" ref="sqlService"/>
+        <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
+
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
