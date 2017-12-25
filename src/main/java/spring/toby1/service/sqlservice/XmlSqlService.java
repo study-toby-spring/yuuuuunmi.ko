@@ -71,7 +71,7 @@ public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
             Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(is);
 
             for (SqlType sql : sqlmap.getSql()) {
-                sqlMap.put(sql.getKey(), sql.getValue());
+                sqlRegistry.registerSql(sql.getKey(), sql.getValue());
             }
         } catch (JAXBException e) {
             throw new RuntimeException(e);
