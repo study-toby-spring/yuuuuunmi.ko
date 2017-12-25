@@ -1,4 +1,4 @@
-package spring.toby1.service;
+package spring.toby1.service.sqlservice;
 
 import spring.toby1.exception.SqlRetrievalFailureException;
 import spring.toby1.service.jaxb.SqlType;

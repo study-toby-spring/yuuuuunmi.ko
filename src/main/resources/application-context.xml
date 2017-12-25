@@ -48,7 +48,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
-    <bean id="sqlService" class="spring.toby1.service.XmlSqlService">
+    <bean id="sqlService" class="spring.toby1.service.sqlservice.XmlSqlService">
        <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
