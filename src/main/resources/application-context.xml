@@ -49,16 +49,7 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
     <bean id="sqlService" class="spring.toby1.service.XmlSqlService">
-        <!--<property name="sqlMap">-->
-            <!--<map>-->
-                <!--<entry key="userAdd" value="insert into users(id, name, password, level, login, recommend, email) values (?,?,?,?,?,?,?)"/>-->
-                <!--<entry key="userGet" value="select * from users where id = ? "/>-->
-                <!--<entry key="userGetAll" value="select * from users order by id"/>-->
-                <!--<entry key="userDeleteAll" value="delete from users"/>-->
-                <!--<entry key="userGetCount" value="select count(*) from users"/>-->
-                <!--<entry key="userUpdate" value="update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?"/>-->
-            <!--</map>-->
-        <!--</property>-->
+       <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
