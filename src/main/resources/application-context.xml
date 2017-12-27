@@ -49,7 +49,7 @@
     </bean>
     <bean id="sqlService" class="spring.toby1.service.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
+        <property name="sqlmap" value="classpath:/sql/sqlmap.xml"/>
     </bean>
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="spring.toby1.service.jaxb"/>

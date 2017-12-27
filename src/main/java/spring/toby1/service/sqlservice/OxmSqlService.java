@@ -1,5 +1,6 @@
 package spring.toby1.service.sqlservice;
 
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import spring.toby1.exception.SqlRetrievalFailureException;
 import spring.toby1.service.jaxb.SqlType;
@@ -28,8 +29,8 @@ public class OxmSqlService implements SqlService {
         this.oxmSqlReader.setUnmarshaller(unmarshaller);
     }
 
-    public void setSqlmapFile(String sqlmapFile) {
-        this.oxmSqlReader.setSqlmapFile(sqlmapFile);
+    public void setSqlmap(Resource sqlmap) {
+        this.oxmSqlReader.setSqlmap(sqlmap);
     }
 
     @PostConstruct
@@ -48,27 +49,27 @@ public class OxmSqlService implements SqlService {
 
         private Unmarshaller unmarshaller;
 
+        private Resource sqlmap; //= new ClassPathResource("/sql/sqlmap.xml");
+
         public void setUnmarshaller(Unmarshaller unmarshaller) {
             this.unmarshaller = unmarshaller;
         }
 
-        public void setSqlmapFile(String sqlmapFile) {
+        public void setSqlmap(Resource sqlmap) {
 
-            this.sqlmapFile = sqlmapFile;
+            this.sqlmap = sqlmap;
         }
-
-        private String sqlmapFile;
 
         public void read(SqlRegistry sqlRegistry) {
 
             try {
-                Source source = new StreamSource(getClass().getResourceAsStream(this.sqlmapFile));
+                Source source = new StreamSource(sqlmap.getInputStream());
                 Sqlmap sqlmap = (Sqlmap) this.unmarshaller.unmarshal(source);
                 for (SqlType sql : sqlmap.getSql()) {
                     sqlRegistry.registerSql(sql.getKey(), sql.getValue());
                 }
             } catch (IOException e) {
-                throw new IllegalStateException(this.sqlmapFile + "을 가져올 수 없습니다", e);
+                throw new IllegalStateException(this.sqlmap.getFilename() + "을 가져올 수 없습니다", e);
             }
 
         }
