@@ -5,7 +5,6 @@
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-
     <!--의존성 주입하는 부분 -->
     <context:component-scan
             base-package="spring.basic">
@@ -48,7 +47,12 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
-    <bean id="sqlService" class="spring.toby1.service.sqlservice.DefaultSqlService">
+    <bean id="sqlService" class="spring.toby1.service.sqlservice.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller"/>
+        <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
+    </bean>
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="spring.toby1.service.jaxb"/>
     </bean>
     <bean id="sqlReader" class="spring.toby1.service.sqlservice.JaxbXmlSqlReader">
         <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
