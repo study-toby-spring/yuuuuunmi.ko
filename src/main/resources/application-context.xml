@@ -3,7 +3,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
     <!--의존성 주입하는 부분 -->
     <context:component-scan
@@ -49,7 +59,7 @@
     </bean>
     <bean id="sqlService" class="spring.toby1.service.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlRegistry" value="classpath:/sql/sqlmap.xml"/>
+        <property name="sqlmap" value="classpath:/sql/sqlmap.xml"/>
     </bean>
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="spring.toby1.service.jaxb"/>
@@ -57,7 +67,8 @@
     <bean id="sqlReader" class="spring.toby1.service.sqlservice.JaxbXmlSqlReader">
         <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
     </bean>
-    <bean id="sqlRegistry" class="spring.toby1.service.sqlservice.ConcurrentHashMapRegistry">
+    <bean id="sqlRegistry" class="spring.toby1.service.sqlservice.EmbeddedDbSqlRegistry">
+        <property name="dataSource" ref="embeddedDatabase"/>
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
@@ -65,7 +76,9 @@
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
     </bean>
-
+    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
+        <jdbc:script location="classpath:embeddedDB/schema.sql"/>
+    </jdbc:embedded-database>
     <bean id="mailSender" class="spring.toby1.service.DummyMailSender">
         <!--<property name="host" value="${mail.smtp.host}"/>-->
     </bean>
