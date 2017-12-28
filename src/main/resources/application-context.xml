@@ -49,7 +49,7 @@
     </bean>
     <bean id="sqlService" class="spring.toby1.service.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlmap" value="classpath:/sql/sqlmap.xml"/>
+        <property name="sqlRegistry" value="classpath:/sql/sqlmap.xml"/>
     </bean>
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="spring.toby1.service.jaxb"/>
@@ -57,7 +57,7 @@
     <bean id="sqlReader" class="spring.toby1.service.sqlservice.JaxbXmlSqlReader">
         <property name="sqlmapFile" value="/sql/sqlmap.xml"/>
     </bean>
-    <bean id="sqlRegistry" class="spring.toby1.service.sqlservice.HashMapSqlRegistry">
+    <bean id="sqlRegistry" class="spring.toby1.service.sqlservice.ConcurrentHashMapRegistry">
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
